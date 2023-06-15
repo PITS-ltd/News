@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:news/core/constant.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:news/futures/profile/profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,6 @@ class MainPage extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-
         unselectedLabelStyle: TextStyle(color: Color(0xff8a898e)),
         showUnselectedLabels: true,
         items: <BottomNavigationBarItem>[
@@ -81,16 +81,24 @@ class MainPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text('Вася'),
-        leading: const Padding(
+        leading:  Padding(
           padding: EdgeInsets.all(2.0),
-          child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              radius: 24,
-              child: CircleAvatar(
-                radius: 24.0,
-                backgroundImage: NetworkImage(
-                    "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o="),
-              )),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
+            },
+            child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 24,
+                child: CircleAvatar(
+                  radius: 24.0,
+                  backgroundImage: NetworkImage(
+                      "https://media.istockphoto.com/id/1322123064/photo/portrait-of-an-adorable-white-cat-in-sunglasses-and-an-shirt-lies-on-a-fabric-hammock.jpg?s=612x612&w=0&k=20&c=-G6l2c4jNI0y4cenh-t3qxvIQzVCOqOYZNvrRA7ZU5o="),
+                )),
+          ),
         ),
         actions: <Widget>[_notification()],
       ),
