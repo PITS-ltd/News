@@ -52,15 +52,7 @@ class NewsPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text("News"),
-              actions: <Widget>[
-                Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: IconButton(
-                      onPressed: () =>
-                          context.read<NewsBloc>().add(NewsMakeAllReadEvent()),
-                      icon: const Icon(Icons.checklist_outlined),
-                    )),
-              ],
+
             ),
             body: Center(
               child: Column(
@@ -109,15 +101,6 @@ class NewsPage extends StatelessWidget {
                                     news?.articles[index].title ?? '' ,style: TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  trailing: state.pageState.isRead[index]
-                                      ? const Icon(
-                                          Icons.done_outlined,
-                                          color: Colors.green,
-                                        )
-                                      : const Icon(
-                                          Icons.notification_important_outlined,
-                                          color: Colors.red,
-                                        ),
                                 ),
                               ),
                             ),
