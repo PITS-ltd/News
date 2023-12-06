@@ -1,5 +1,7 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:news/core/globals/globals.dart';
 import 'package:news/data/model/news.dart';
 import 'package:news/futures/core_widgets/card_news.dart';
@@ -7,7 +9,18 @@ import 'package:news/futures/main/bloc/news_bloc.dart';
 import 'package:news/futures/web_view_news/web_view_container.dart';
 
 void main() {
-  runApp(const MyApp());
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notifications',
+        defaultColor: Colors.teal,
+        importance: NotificationImportance.High,
+        channelShowBadge: true, channelDescription: 'test',
+      ),
+    ],
+  );  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -51,12 +64,17 @@ class NewsPage extends StatelessWidget {
           News? news = state.pageState.news;
           return Scaffold(
             appBar: AppBar(
-              title: const Text("News"),
-
+              title: Text("News update at ${state.pageState.dateTime}"),
             ),
             body: Center(
               child: Column(
                 children: [
+                  Visibility(
+                    visible: state.pageState.isOffline,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MyCustomForm()
+                      )),
                   Expanded(
                     child: ListView.builder(
                         padding: const EdgeInsets.all(8),
@@ -70,9 +88,6 @@ class NewsPage extends StatelessWidget {
                               onTap: () {
                                 if (news?.results[index].url?.isNotEmpty ??
                                     false) {
-                                  context
-                                      .read<NewsBloc>()
-                                      .add(NewsMakeOneReadEvent(index));
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -85,7 +100,8 @@ class NewsPage extends StatelessWidget {
                               child: Card(
                                 child: ListTile(
                                   title: Text(
-                                    news?.results[index].title ?? '' ,style: TextStyle(fontSize: 12),
+                                    news?.results[index].title ?? '',
+                                    style: TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -100,6 +116,37 @@ class NewsPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+// Define a custom Form widget.
+class MyCustomForm extends StatefulWidget {
+  const MyCustomForm({super.key});
+
+  @override
+  State<MyCustomForm> createState() => _MyCustomFormState();
+}
+
+// Define a corresponding State class.
+// This class holds data related to the Form.
+class _MyCustomFormState extends State<MyCustomForm> {
+  // Create a text controller. Later, use it to retrieve the
+  // current value of the TextField.
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return  TextField(
+      controller: myController,
     );
   }
 }

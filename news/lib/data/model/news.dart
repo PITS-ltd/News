@@ -8,10 +8,13 @@ class News {
   final String status;
   @JsonKey(name: 'results')
   final List<Results> results;
+  @JsonKey(name: 'last_updated')
+  final DateTime? lastUpdated;
 
   const News({
     this.status = '',
     this.results = const [],
+    this.lastUpdated,
   });
 
   factory News.fromJson(Map<String, dynamic> json) => _$NewsFromJson(json);
@@ -37,6 +40,7 @@ class Results {
   final String title;
   @JsonKey(name: 'url')
   final String? url;
+
 
   const Results({
     this.title = '',

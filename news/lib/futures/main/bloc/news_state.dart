@@ -25,19 +25,25 @@ class NewsError extends NewsState {
 
 class PageState {
   bool onAwait;
+  String dateTime;
   String error;
   News? news;
   List<bool> isRead;
+  bool isOffline;
 
   PageState({
     this.onAwait = false,
     this.news,
+    this.dateTime = '',
     this.error = '',
+    this.isOffline = false,
     this.isRead = const [],
   });
 
   PageState copyWith({
     bool? onAwait,
+    bool? isOffline,
+    String? dateTime,
     News? news,
     String? error,
     List<bool>? isRead,
@@ -45,7 +51,9 @@ class PageState {
     return PageState(
       onAwait: onAwait ?? this.onAwait,
       news: news ?? this.news,
+      isOffline: isOffline ?? this.isOffline,
       isRead: isRead ?? this.isRead,
+      dateTime: dateTime ?? this.dateTime,
       error: error ?? this.error,
     );
   }

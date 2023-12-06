@@ -12,11 +12,15 @@ News _$NewsFromJson(Map<String, dynamic> json) => News(
               ?.map((e) => Results.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      lastUpdated: json['last_updated'] == null
+          ? null
+          : DateTime.parse(json['last_updated'] as String),
     );
 
 Map<String, dynamic> _$NewsToJson(News instance) => <String, dynamic>{
       'status': instance.status,
       'results': instance.results,
+      'last_updated': instance.lastUpdated?.toIso8601String(),
     };
 
 Results _$ResultsFromJson(Map<String, dynamic> json) => Results(
