@@ -8,8 +8,8 @@ class NewsApi {
     var dio = Dio();
     Response? news;
     try {
-      news = await dio.get('${AppConstants.base}/top-headlines',
-          queryParameters: {"apiKey": token, "country": "us"});
+      news = await dio.get('${AppConstants.base}/svc/topstories/v2/arts.json',
+          queryParameters: {"api-key": token});
 
       print('STATUS ${news.statusMessage}');
       print('DATA ${news.data}');

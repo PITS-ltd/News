@@ -21,20 +21,20 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       emit(NewsLoadingState(state.pageState));
       NewsRepository newsRepository = NewsRepository();
       await newsRepository.getTopNews(AppConstants.token).then((value) async {
-        if (value?.status.contains('ok') ?? false) {
+        if (value?.status.contains('OK') ?? false) {
 
 
           emit(NewsUp(
               state.pageState.copyWith( news: value)));
 
-          if (value?.articles != null && value!.articles.isNotEmpty) {
+          if (value?.results != null && value!.results.isNotEmpty) {
             storeToLocal(value);
           }
         } else {
           emit(NewsLoadingState(state.pageState));
 
           News news = await getNewsFromStore();
-          if (news.articles.isNotEmpty) {
+          if (news.results.isNotEmpty) {
 
             final SnackBar snackBar = SnackBar(content: Text('Последние загруженные новости'));
             snackbarKey.currentState?.showSnackBar(snackBar);

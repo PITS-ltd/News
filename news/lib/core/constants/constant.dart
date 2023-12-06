@@ -1,7 +1,7 @@
 
 abstract class AppConstants {
-  static const String base = 'https://newsapi.org/v2';
-  static const String token = '2f68f4b168494c738f4440c3087c22ff';
+  static const String base = 'https://api.nytimes.com';
+  static const String token = 'xDr9oOSzAw0D6H38gTUn0MqDcybuZC4D';
 
 }
 

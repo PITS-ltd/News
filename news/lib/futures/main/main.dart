@@ -60,20 +60,7 @@ class NewsPage extends StatelessWidget {
                   Expanded(
                     child: ListView.builder(
                         padding: const EdgeInsets.all(8),
-                        itemCount: news?.articles.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CardNews(
-                                  imgUrl: news?.articles[index].urlToImage,
-                                  title: news?.articles[index].title));
-                        }),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                        padding: const EdgeInsets.all(8),
-                        itemCount: news?.articles.length,
+                        itemCount: news?.results.length,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
                           return Center(
@@ -81,7 +68,7 @@ class NewsPage extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
                               onTap: () {
-                                if (news?.articles[index].url?.isNotEmpty ??
+                                if (news?.results[index].url?.isNotEmpty ??
                                     false) {
                                   context
                                       .read<NewsBloc>()
@@ -90,7 +77,7 @@ class NewsPage extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WebViewExample(
-                                              url: news!.articles[index].url!,
+                                              url: news!.results[index].url!,
                                             )),
                                   );
                                 }
@@ -98,7 +85,7 @@ class NewsPage extends StatelessWidget {
                               child: Card(
                                 child: ListTile(
                                   title: Text(
-                                    news?.articles[index].title ?? '' ,style: TextStyle(fontSize: 12),
+                                    news?.results[index].title ?? '' ,style: TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
