@@ -4,11 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:news/core/constants/constant.dart';
 
 class NewsApi {
-  static Future<Response?> getTopNews(String token) async {
+  static Future<Response?> getTopNews(String token, String category) async {
     var dio = Dio();
     Response? news;
     try {
-      news = await dio.get('${AppConstants.base}/svc/topstories/v2/arts.json',
+      news = await dio.get('${AppConstants.base}/svc/topstories/v2/$category.json',
           queryParameters: {"api-key": token});
 
       print('STATUS ${news.statusMessage}');

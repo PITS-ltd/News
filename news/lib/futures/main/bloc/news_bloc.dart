@@ -22,7 +22,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     on<NewsGet>((event, emit) async {
       emit(NewsLoadingState(state.pageState));
       NewsRepository newsRepository = NewsRepository();
-      await newsRepository.getTopNews(AppConstants.token).then((value) async {
+      await newsRepository
+          .getTopNews(
+              AppConstants.token, state.pageState.category[event.numberOfCat])
+          .then((value) async {
         if (value?.status.contains('OK') ?? false) {
           getPush(value?.lastUpdated);
 
@@ -33,7 +36,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
             emit(NewsUp(state.pageState.copyWith(
                 news: value,
                 results: value.results,
-                resultsTemp: value.results)));
+                resultsTemp: value.results, selectedCat: event.numberOfCat)));
+            print(event.numberOfCat);
           }
         } else {
           emit(NewsLoadingState(state.pageState));

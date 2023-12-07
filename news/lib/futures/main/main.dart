@@ -17,15 +17,16 @@ void main() {
         channelName: 'Basic Notifications',
         defaultColor: Colors.teal,
         importance: NotificationImportance.High,
-        channelShowBadge: true, channelDescription: 'test',
+        channelShowBadge: true,
+        channelDescription: 'test',
       ),
     ],
-  );  runApp(const MyApp());
+  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +46,10 @@ class NewsPage extends StatelessWidget {
 
   final myController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NewsBloc()..add(NewsGet()),
+      create: (context) => NewsBloc()..add(NewsGet(0)),
       child: BlocConsumer<NewsBloc, NewsState>(
         listener: (context, state) {
           // TODO: implement listener
@@ -72,16 +72,44 @@ class NewsPage extends StatelessWidget {
               child: Column(
                 children: [
                   Visibility(
-                    visible: state.pageState.isOffline,
+                      visible: state.pageState.isOffline,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                            controller: myController,
-                            onChanged: (text) {
-                              print('e;flpvepok ${state.pageState.results.length}');
-                              context.read<NewsBloc>().add(NewsSearchEvent(text));
-                            }
-                        )
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                              controller: myController,
+                              onChanged: (text) {
+                                context
+                                    .read<NewsBloc>()
+                                    .add(NewsSearchEvent(text));
+                              }))),
+                  Visibility(
+                      visible: !state.pageState.isOffline,
+                      child: SizedBox(
+                        height: 30,
+                        child: ListView.builder(
+                            padding: const EdgeInsets.all(8),
+                            itemCount: state.pageState.category.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: GestureDetector(
+                                  child: Chip(
+                                    label:
+                                        Text(state.pageState.category[index]),
+                                    backgroundColor:
+                                        index == state.pageState.selectedCat
+                                            ? Colors.orange
+                                            : Colors.white,
+                                  ),
+                                  onTap: () {
+                                    context
+                                        .read<NewsBloc>()
+                                        .add(NewsGet(index));
+                                  },
+                                ),
+                              );
+                            }),
                       )),
                   Expanded(
                     child: ListView.builder(
@@ -94,13 +122,13 @@ class NewsPage extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
                               onTap: () {
-                                if (results[index].url?.isNotEmpty ??
-                                    false) {
+                                if (results[index].url?.isNotEmpty ?? false) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WebViewExample(
-                                              url: results[index].url ?? 'https://www.nytimes.com',
+                                              url: results[index].url ??
+                                                  'https://www.nytimes.com',
                                             )),
                                   );
                                 }

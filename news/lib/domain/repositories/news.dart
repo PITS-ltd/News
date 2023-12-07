@@ -8,9 +8,9 @@ import 'package:news/data/model/news.dart';
 import 'package:news/data/network/dio_exception.dart';
 
 class NewsRepository {
-  Future<News?> getTopNews(String token) async {
+  Future<News?> getTopNews(String token, String category) async {
     try {
-      final response = await NewsApi.getTopNews(token);
+      final response = await NewsApi.getTopNews(token, category);
       return (response?.data != null)
           ? News.fromJson(response!.data)
           : const News();
