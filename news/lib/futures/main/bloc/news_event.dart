@@ -7,10 +7,9 @@ abstract class NewsEvent {}
 class NewsGet extends NewsEvent {
 }
 
-class NewsMakeAllReadEvent extends NewsEvent {
-  NewsMakeAllReadEvent();
-}class NewsMakeOneReadEvent extends NewsEvent {
-  int index;
-  NewsMakeOneReadEvent(this.index);
+class NewsSearchEvent extends NewsEvent {
+  String value;
+  NewsSearchEvent(this.value);
 }
+
 

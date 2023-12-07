@@ -20,29 +20,35 @@ part 'news_state.dart';
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   NewsBloc() : super(NewsInitialState(PageState())) {
     on<NewsGet>((event, emit) async {
-
       emit(NewsLoadingState(state.pageState));
       NewsRepository newsRepository = NewsRepository();
       await newsRepository.getTopNews(AppConstants.token).then((value) async {
         if (value?.status.contains('OK') ?? false) {
-          getLastUpdate(value?.lastUpdated);
           getPush(value?.lastUpdated);
 
-          emit(NewsUp(
-              state.pageState.copyWith( news: value)));
+          getLastUpdate(value?.lastUpdated);
 
           if (value?.results != null && value!.results.isNotEmpty) {
             storeToLocal(value);
+            emit(NewsUp(state.pageState.copyWith(
+                news: value,
+                results: value.results,
+                resultsTemp: value.results)));
           }
         } else {
           emit(NewsLoadingState(state.pageState));
 
           News news = await getNewsFromStore();
           if (news.results.isNotEmpty) {
-            final SnackBar snackBar = SnackBar(content: Text('Последние загруженные новости'));
+            final SnackBar snackBar =
+                SnackBar(content: Text('Последние загруженные новости'));
             snackbarKey.currentState?.showSnackBar(snackBar);
             getLastUpdate(news.lastUpdated);
-            emit(NewsUp(state.pageState.copyWith(news: news, isOffline: true)));
+            emit(NewsUp(state.pageState.copyWith(
+                news: news,
+                results: news.results,
+                resultsTemp: news.results,
+                isOffline: true)));
           } else {
             emit(NewsError(state.pageState.copyWith(
               error: 'Ошибка загрузки новостей',
@@ -52,6 +58,21 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       });
     });
 
+    on<NewsSearchEvent>((event, emit) async {
+      List<Results> search = [];
+
+      if (event.value.isNotEmpty) {
+        for (var element in state.pageState.resultsTemp) {
+          if (element.title.toLowerCase().contains(event.value.toLowerCase())) {
+            search.add(element);
+          }
+          emit(NewsUp(state.pageState.copyWith(results: search)));
+        }
+      } else {
+        emit(NewsUp(
+            state.pageState.copyWith(results: state.pageState.resultsTemp)));
+      }
+    });
   }
 
   Future<void> storeToLocal(News news) async {
@@ -68,30 +89,30 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     return (newsO != null) ? newsO : const News();
   }
 
-   getLastUpdate(DateTime? lastUpdated) {
+  getLastUpdate(DateTime? lastUpdated) {
     String lastUpdate;
-     if(lastUpdated != null){
-       lastUpdate = DateFormat('kk:mm EEE d MMM').format(lastUpdated);
-     }
-     else {
-       lastUpdate = '';
-     }
-     emit(NewsUp(state.pageState.copyWith(dateTime: lastUpdate)));
-   }
+    if (lastUpdated != null) {
+      lastUpdate = DateFormat('kk:mm EEE d MMM').format(lastUpdated);
+    } else {
+      lastUpdate = '';
+    }
+    emit(NewsUp(state.pageState.copyWith(dateTime: lastUpdate)));
+  }
+
   Future<void> getPush(DateTime? lastUpdated) async {
     News newsFromStore = await getNewsFromStore();
 
-    if(lastUpdated != null && newsFromStore.lastUpdated != null){
-      if(lastUpdated.isAfter(newsFromStore.lastUpdated!)){
-        String lastDateFromAPI = DateFormat('kk:mm EEE d MMM').format(lastUpdated);
+    if (lastUpdated != null && newsFromStore.lastUpdated != null) {
+      if (lastUpdated.isAfter(newsFromStore.lastUpdated!)) {
+        String lastDateFromAPI =
+            DateFormat('kk:mm EEE d MMM').format(lastUpdated);
 
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: 1,
             channelKey: 'basic_channel',
-            title:
-            '${Emojis.plant_cactus} NEWS AVALIBLE!!!',
-            body: 'News update at ${lastDateFromAPI}',
+            title: '${Emojis.plant_cactus} NEWS AVALIBLE!!!',
+            body: 'News update at $lastDateFromAPI',
             notificationLayout: NotificationLayout.Default,
           ),
         );
@@ -99,8 +120,5 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
     print(lastUpdated.toString());
     print(newsFromStore.lastUpdated.toString());
-
   }
 }
-
-

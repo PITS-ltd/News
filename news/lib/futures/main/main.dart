@@ -26,12 +26,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: snackbarKey, // <= this
-
+      scaffoldMessengerKey: snackbarKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -43,6 +42,9 @@ class MyApp extends StatelessWidget {
 
 class NewsPage extends StatelessWidget {
   NewsPage({super.key});
+
+  final myController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class NewsPage extends StatelessWidget {
               body: Center(child: Text(state.pageState.error)),
             );
           }
-          News? news = state.pageState.news;
+          List<Results> results = state.pageState.results;
           return Scaffold(
             appBar: AppBar(
               title: Text("News update at ${state.pageState.dateTime}"),
@@ -73,12 +75,18 @@ class NewsPage extends StatelessWidget {
                     visible: state.pageState.isOffline,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: MyCustomForm()
+                        child: TextField(
+                            controller: myController,
+                            onChanged: (text) {
+                              print('e;flpvepok ${state.pageState.results.length}');
+                              context.read<NewsBloc>().add(NewsSearchEvent(text));
+                            }
+                        )
                       )),
                   Expanded(
                     child: ListView.builder(
                         padding: const EdgeInsets.all(8),
-                        itemCount: news?.results.length,
+                        itemCount: results.length,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
                           return Center(
@@ -86,13 +94,13 @@ class NewsPage extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
                               onTap: () {
-                                if (news?.results[index].url?.isNotEmpty ??
+                                if (results[index].url?.isNotEmpty ??
                                     false) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WebViewExample(
-                                              url: news!.results[index].url!,
+                                              url: results[index].url ?? 'https://www.nytimes.com',
                                             )),
                                   );
                                 }
@@ -100,7 +108,7 @@ class NewsPage extends StatelessWidget {
                               child: Card(
                                 child: ListTile(
                                   title: Text(
-                                    news?.results[index].title ?? '',
+                                    results[index].title ?? '',
                                     style: TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -120,33 +128,42 @@ class NewsPage extends StatelessWidget {
   }
 }
 
-// Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({super.key});
-
-  @override
-  State<MyCustomForm> createState() => _MyCustomFormState();
-}
-
-// Define a corresponding State class.
-// This class holds data related to the Form.
-class _MyCustomFormState extends State<MyCustomForm> {
-  // Create a text controller. Later, use it to retrieve the
-  // current value of the TextField.
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return  TextField(
-      controller: myController,
-    );
-  }
-}
+// // Define a custom Form widget.
+// class MyCustomForm extends StatefulWidget {
+//   const MyCustomForm({super.key});
+//
+//   @override
+//   State<MyCustomForm> createState() => _MyCustomFormState();
+// }
+//
+// // Define a corresponding State class.
+// // This class holds data related to the Form.
+// class _MyCustomFormState extends State<MyCustomForm> {
+//   // Create a text controller. Later, use it to retrieve the
+//   // current value of the TextField.
+//
+//   @override
+//   void dispose() {
+//     // Clean up the controller when the widget is removed from the
+//     // widget tree.
+//     myController.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return BlocProvider(
+//       create: (context) => NewsBloc(),
+//       child: BlocConsumer<NewsBloc, NewsState>(
+//         listener: (context, state) {
+//           // TODO: implement listener
+//         },
+//         builder: (context, state) {
+//           return
+//         },
+//       ),
+//     );
+//
+//   }
+// }

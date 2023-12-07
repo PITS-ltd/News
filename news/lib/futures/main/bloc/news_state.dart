@@ -28,12 +28,16 @@ class PageState {
   String dateTime;
   String error;
   News? news;
+  List<Results> results;
+  List<Results> resultsTemp;
   List<bool> isRead;
   bool isOffline;
 
   PageState({
     this.onAwait = false,
     this.news,
+    this.results = const [],
+    this.resultsTemp = const [],
     this.dateTime = '',
     this.error = '',
     this.isOffline = false,
@@ -44,13 +48,18 @@ class PageState {
     bool? onAwait,
     bool? isOffline,
     String? dateTime,
+    List<Results>? results,
+    List<Results>? resultsTemp,
     News? news,
+    News? newsTemp,
     String? error,
     List<bool>? isRead,
   }) {
     return PageState(
       onAwait: onAwait ?? this.onAwait,
       news: news ?? this.news,
+      results: results ?? this.results,
+      resultsTemp: resultsTemp ?? this.resultsTemp,
       isOffline: isOffline ?? this.isOffline,
       isRead: isRead ?? this.isRead,
       dateTime: dateTime ?? this.dateTime,
