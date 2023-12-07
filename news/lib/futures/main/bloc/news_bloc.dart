@@ -28,11 +28,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           .then((value) async {
         if (value?.status.contains('OK') ?? false) {
           getPush(value?.lastUpdated);
-
           getLastUpdate(value?.lastUpdated);
 
           if (value?.results != null && value!.results.isNotEmpty) {
             storeToLocal(value);
+            print('------ ${value.results.first.multimedia.first.url}');
             emit(NewsUp(state.pageState.copyWith(
                 news: value,
                 results: value.results,

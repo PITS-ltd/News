@@ -40,11 +40,14 @@ class Results {
   final String title;
   @JsonKey(name: 'url')
   final String? url;
+  @JsonKey(name: 'multimedia')
+  final List<Multimedia> multimedia;
 
 
   const Results({
     this.title = '',
     this.url,
+    this.multimedia = const [],
 
   });
 
@@ -60,6 +63,33 @@ class Results {
     return Results(
       title: title ?? this.title,
 
+      url: url ?? this.url,
+    );
+  }
+}
+
+
+@JsonSerializable()
+class Multimedia {
+
+  @JsonKey(name: 'url')
+  final String url;
+
+
+
+  const Multimedia({
+    this.url = '',
+  });
+
+  factory Multimedia.fromJson(Map<String, dynamic> json) => _$MultimediaFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MultimediaToJson(this);
+
+  Results copyWith({
+    String? url,
+
+  }) {
+    return Results(
       url: url ?? this.url,
     );
   }
